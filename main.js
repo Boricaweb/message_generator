@@ -1,17 +1,13 @@
 //This is the program create for someone who can't make a decision, what game they would like to play. Alright, enjoy your game!
 
-//Function factory for random message
+//Function factory for random message or any kind of output you prefer
 function iWillPlay(name, game) {
     return {
-        _name: name, //Your name
-        _game: game, //Your game
+        _name: name, /*Your name*/
+        _game: game, /*Your name*/
         get message() {
             //Game message method
-            if (typeof this._name === 'string' && typeof this._game === 'string') {
-                console.log(`${this._name} will play ${this._game}`);
-            } else {
-                console.log('Please input your name in string');
-            }
+            console.log(`${this._name} will play ${this._game}`);
         }
     }
 }
@@ -19,7 +15,7 @@ function iWillPlay(name, game) {
 //Random game name by API from the Random Words API website
 //Use async and await for reduce the execute time
 randomGame();
-
+//Run async function after factory function because async will always execute at the last function to prevent any bugs
 async function randomGame() {
     try {
         const response = await fetch("https://random-words-api.kushcreates.com/api?language=en&category=games&type=uppercase&words=100");
@@ -28,9 +24,17 @@ async function randomGame() {
         }
         const data = await response.json();
         const game = data[Math.floor(Math.random()*data.length)].word;
-        iWillPlay('Non', game).message;
+        //input your name on node.js like this -> $ node main.js your name
+        const name = process.argv[2]; 
+        if(typeof name === 'number' || typeof name === 'boolean') {
+            console.log('Name should be a string');
+            return null;
+        } else {
+            return iWillPlay(name, game).message;
+        }
+        
     } catch (error) {
-        /*catch the error which may come from website*/
+        //catch the error which may come from website
         console.error(error);
         return null;
     }
