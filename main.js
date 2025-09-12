@@ -1,13 +1,13 @@
-//This is the program create for someone who can't make a decision, what game they would like to play. Alright, enjoy your game!
+//This is the program create for someone who can't make a decision about what game they would like to play. Alright, enjoy your game!
 
 //Function factory for random message or any kind of output you prefer
-function iWillPlay(name, game) {
+function iWillPlay(device, game) {
     return {
-        _name: name, /*Your name*/
+        _device: device, /*Your game device*/
         _game: game, /*Your name*/
         get message() {
             //Game message method
-            console.log(`${this._name} will play ${this._game}`);
+            return `Let play ${this._game} !!!`;                 
         }
     }
 }
@@ -18,31 +18,26 @@ randomGame();
 //Run async function after factory function because async will always execute at the last function to prevent any bugs
 async function randomGame() {
     try {
-        const response = await fetch("https://random-words-api.kushcreates.com/api?language=en&category=games&type=uppercase&words=100");
+        //input your game device on node.js like this -> $ node main.js device(console, PC, mobile)
+        const device = process.argv[2]; 
+        if (device === undefined) {
+            console.log('Please input your game device');
+            return 0;
+        } else if (device.toLowerCase() !== 'console' && device.toLowerCase() !== 'pc' && device.toLowerCase() !== 'mobile') {
+            console.log('Wrong device type!, the device should be console, mobile, or pc');
+            return 0;
+        }
+        //fetch API
+        const response = await fetch(`https://random-words-api.kushcreates.com/api?language=en&category=${device.toLowerCase()}_games&type=uppercase&words=100`);
         if (!response.ok) {
-            throw new Error('Could not fetch resource')
+            throw new Error('Could not fetch resource');
         }
         const data = await response.json();
-        const game = data[Math.floor(Math.random()*data.length)].word;
-        //input your name on node.js like this -> $ node main.js your name
-        const name = process.argv[2]; 
-        if(typeof name === 'number' || typeof name === 'boolean') {
-            console.log('Name should be a string');
-            return null;
-        } else {
-            return iWillPlay(name, game).message;
-        }
-        
+        const game = await data[Math.floor(Math.random()*data.length)].word;             
+        console.log(iWillPlay(device, game).message);      
     } catch (error) {
         //catch the error which may come from website
         console.error(error);
         return null;
     }
 }
-
-
-
-
-
-
-
