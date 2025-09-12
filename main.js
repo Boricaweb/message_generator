@@ -22,10 +22,9 @@ async function randomGame() {
         const device = process.argv[2]; 
         if (device === undefined) {
             console.log('Please input your game device');
-            return 0;
+            return null;
         } else if (device.toLowerCase() !== 'console' && device.toLowerCase() !== 'pc' && device.toLowerCase() !== 'mobile') {
-            console.log('Wrong device type!, the device should be console, mobile, or pc');
-            return 0;
+            throw new Error('the device should be console, mobile, or pc');
         }
         //fetch API
         const response = await fetch(`https://random-words-api.kushcreates.com/api?language=en&category=${device.toLowerCase()}_games&type=uppercase&words=100`);
